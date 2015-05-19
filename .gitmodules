@@ -1,0 +1,9 @@
+[submodule "lvandeve"]
+	path = lvandeve
+	url = https://github.com/lvandeve/lodepng.git
+[submodule "lodepng"]
+	path = lodepng
+	url = https://github.com/lvandeve/lodepng.git
+[submodule "gif-h"]
+	path = gif-h
+	url = https://github.com/ginsweater/gif-h.git
