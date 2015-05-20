@@ -2,7 +2,7 @@
 
 #include <list>
 #include <assert.h>
-
+#include "gif-h/gif.h"
 
 Circle Welzl::Process(Image *im, const std::vector<Point> &points)
 {
@@ -14,7 +14,18 @@ Circle Welzl::Process(Image *im, const std::vector<Point> &points)
     mPset.push_back(i);
   }
 
-  return RProcess();
+  gw = new GifWriter;
+
+  GifBegin(static_cast<GifWriter *>(gw), "welzl.gif", image->GetSize().width, image->GetSize().height, 500);
+  GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+
+  Circle c = RProcess();
+
+  GifEnd(static_cast<GifWriter *>(gw));
+
+  delete static_cast<GifWriter *>(gw);
+
+  return c;
 }
 
 Circle Welzl::RProcess()
@@ -25,7 +36,18 @@ Circle Welzl::RProcess()
   {
     if(mDisk.size() == 3)
     {
-      circle = CreateCircle();
+      circle = CreateCircle3();
+    }
+    if(mDisk.size() == 2)
+    {
+      circle = CreateCircle2();
+    }
+    if(circle.radius)
+    {
+      image->StateSave();
+      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      image->StateLoad();
     }
   }
   else
@@ -33,15 +55,95 @@ Circle Welzl::RProcess()
     unsigned int point = mPset.back();
     mPset.pop_back();
 
+    unsigned int ic = image->GetPoint(mPoints[point]);
+    image->DrawPoint(mPoints[point], 0x000000FF);
+    if(circle.radius)
+    {
+      image->StateSave();
+      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      image->StateLoad();
+    }
+    else
+    {
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+    }
+
     circle = RProcess();
+
+    image->DrawPoint(mPoints[point], 0x0000FFFF);
+    if(circle.radius)
+    {
+      image->StateSave();
+      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      image->StateLoad();
+    }
+    else
+    {
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+    }
+
+    image->DrawPoint(mPoints[point], 0x000000FF);
+    if(circle.radius)
+    {
+      image->StateSave();
+      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
+      image->StateLoad();
+    }
+    else
+    {
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
+    }
 
     if(!IsInsideCircle(circle, point))
     {
+      unsigned int ic2 = image->GetPoint(mPoints[point]);
+      image->DrawPoint(mPoints[point], 0xFF00FFFF);
+      if(circle.radius)
+      {
+        image->StateSave();
+        image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        image->StateLoad();
+      }
+      else
+      {
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      }
+
       mDisk.push_back(point);
       circle = RProcess();
       mDisk.pop_back();
       mPset.push_front(point);
+
+      image->DrawPoint(mPoints[point], ic2);
+      if(circle.radius)
+      {
+        image->StateSave();
+        image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        image->StateLoad();
+      }
+      else
+      {
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      }
     }
+
+     image->DrawPoint(mPoints[point], ic);
+     if(circle.radius)
+     {
+       image->StateSave();
+       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+       image->StateLoad();
+     }
+     else
+     {
+       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+     }
   }
 
   return circle;
@@ -62,7 +164,7 @@ bool Welzl::IsInsideCircle(const Circle &circle, unsigned int index)
   return len < circle.radius;
 }
 
-Circle Welzl::CreateCircle()
+Circle Welzl::CreateCircle3()
 {
   assert(mDisk.size() == 3);
 
@@ -95,16 +197,26 @@ Circle Welzl::CreateCircle()
 
   circle.radius = sqrt((circle.center.x - x1) * (circle.center.x - x1) + (circle.center.y - y1) * (circle.center.y - y1));
 
-  image->Fill(0xFFFFFFFF);
-  image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-  for(auto it = mPoints.begin(); it != mPoints.end(); ++it)
+  return circle;
+}
+
+Circle Welzl::CreateCircle2()
+{
+  assert(mDisk.size() == 2);
+
+  Circle circle;
+
+  const float x1 = mPoints[mDisk[0]].x;
+  const float y1 = mPoints[mDisk[0]].y;
+  const float x2 = mPoints[mDisk[1]].x;
+  const float y2 = mPoints[mDisk[1]].y;
+
+  circle.radius = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) / 2.0f;
+  if(circle.radius)
   {
-    image->DrawPoint(*it, 0x00FF00FF);
+    circle.center.x = (x2 + x1) / 2.0f;
+    circle.center.y = (y2 + y1) / 2.0f;
   }
-  image->DrawPoint(mPoints[mDisk[0]], 0x0000FFFF);
-  image->DrawPoint(mPoints[mDisk[1]], 0x0000FFFF);
-  image->DrawPoint(mPoints[mDisk[2]], 0x0000FFFF);
-  image->Save("img.png");
 
   return circle;
 }

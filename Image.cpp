@@ -71,7 +71,13 @@ void Image::DrawCircle(const Point &center, float radius, unsigned int color)
     float sina = sin(ar);
     float cosa = cos(ar);
 
-    DrawPoint(Point(vec.x * cosa - vec.y * sina, vec.x * sina - vec.y * cosa) + center, color);
+    Point p(Point(vec.x * cosa - vec.y * sina, vec.x * sina - vec.y * cosa) + center);
+    unsigned int pc = GetPoint(p);
+    if(pc == 0xFFFFFFFF)
+    {
+      pc = color;
+    }
+    DrawPoint(p, pc);
   }
 
 }
@@ -83,5 +89,51 @@ void Image::Fill(unsigned int color)
     {
       Set(Point(static_cast<float>(x), static_cast<float>(y)), color);
     }
+}
+
+Size Image::GetSize() const
+{
+  return mSize;
+}
+
+const std::vector<unsigned char> & Image::Raw()
+{
+  return mData;
+}
+
+void Image::SetRaw(const std::vector<unsigned char> &raw)
+{
+  mData = raw;
+}
+
+unsigned int Image::GetPoint(const Point &p)
+{
+  if(p.x < 0 || p.x > mSize.width - 1 || 
+    p.y < 0 || p.y > mSize.height - 1)
+  {
+    return 0xFFFFFFFF;
+  }
+  //assert(px < mSize.width);
+  //assert(py < mSize.height);
+  unsigned int px = static_cast<unsigned int>(floor(p.x + 0.5f));
+  unsigned int py = static_cast<unsigned int>(floor(p.y + 0.5f));
+  unsigned int ty = mSize.height - py - 1;
+
+  unsigned int color = 0;
+  color |= ((0x000000FF & mData[4 * mSize.width * ty + 4 * px + 3]) << 0);
+  color |= ((0x000000FF & mData[4 * mSize.width * ty + 4 * px + 2]) << 8);
+  color |= ((0x000000FF & mData[4 * mSize.width * ty + 4 * px + 1]) << 16);
+  color |= ((0x000000FF & mData[4 * mSize.width * ty + 4 * px + 0]) << 24);
+  return color;
+}
+
+void Image::StateSave()
+{
+  mDataState = mData;
+}
+
+void Image::StateLoad()
+{
+  mData = mDataState;
 }
 

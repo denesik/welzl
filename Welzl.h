@@ -8,6 +8,7 @@
 #include <list>
 #include "Image.h"
 
+
 struct Circle
 {
   Point center;
@@ -34,12 +35,16 @@ private:
 
   Image *image;
 
+  void *gw;
+
 private:
   bool IsInsideCircle(const Circle &circle, unsigned int index);
 
   Circle RProcess();
 
-  Circle CreateCircle();
+  Circle CreateCircle3();
+
+  Circle CreateCircle2();
 
 };
 

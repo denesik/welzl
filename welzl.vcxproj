@@ -80,6 +80,7 @@
     <ClCompile Include="Welzl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gif-h\gif.h" />
     <ClInclude Include="Gmath.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="lodepng\lodepng.h" />
