@@ -1,6 +1,7 @@
 #include "Welzl.h"
 #include "Image.h"
 #include <time.h>
+#include <algorithm>
 
 // Генерация точек в ректангле.
 std::vector<Point> Generate(const Point &lb, const Point &rt, unsigned int count)
@@ -15,22 +16,37 @@ std::vector<Point> Generate(const Point &lb, const Point &rt, unsigned int count
     points.push_back(Point(lb.x + rand() % size.width, lb.y + rand() % size.height));
   }
 
+//   std::sort(points.begin(), points.end(), 
+//     [](const Point &p1, const Point &p2) -> bool
+//   {
+//     if(p1.y == p2.y)
+//       return p1.x > p2.x;
+//     return p1.y > p2.y;
+//   });
+//   auto it = std::unique(points.begin(), points.end(), 
+//     [](const Point &p1, const Point &p2)
+//   {
+//     return p1.x == p2.x && p1.y == p2.y;
+//   });   
+// 
+//   points.resize(std::distance(points.begin(), it));
+
   return points;
 }
 
 
 int main()
 {
-  //srand(static_cast<unsigned int>(time(0)));
+  srand(static_cast<unsigned int>(time(0)));
   //srand(static_cast<unsigned int>(9)); // global test
-  srand(static_cast<unsigned int>(12));
-  Size size(100, 100);
+  //srand(static_cast<unsigned int>(12));
+  Size size(1000, 1000);
 
   Image image;
   image.Resize(size);
   image.Fill(0xFFFFFFFF);
 
-  std::vector<Point> points = Generate(Point(20, 20), Point(80, 80), 7);
+  std::vector<Point> points = Generate(Point(200, 200), Point(800, 800), 500);
 
   Welzl w;
 

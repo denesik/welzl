@@ -4,6 +4,8 @@
 #include <assert.h>
 #include "gif-h/gif.h"
 
+#define GIF_SPEED 2
+
 Circle Welzl::Process(Image *im, const std::vector<Point> &points)
 {
   image = im;
@@ -46,7 +48,7 @@ Circle Welzl::RProcess()
     {
       image->StateSave();
       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       image->StateLoad();
     }
   }
@@ -61,12 +63,12 @@ Circle Welzl::RProcess()
     {
       image->StateSave();
       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       image->StateLoad();
     }
     else
     {
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
     }
 
     circle = RProcess();
@@ -76,26 +78,26 @@ Circle Welzl::RProcess()
     {
       image->StateSave();
       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       image->StateLoad();
     }
     else
     {
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
     }
 
-    image->DrawPoint(mPoints[point], 0x000000FF);
-    if(circle.radius)
-    {
-      image->StateSave();
-      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
-      image->StateLoad();
-    }
-    else
-    {
-      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
-    }
+//     image->DrawPoint(mPoints[point], 0x000000FF);
+//     if(circle.radius)
+//     {
+//       image->StateSave();
+//       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+//       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
+//       image->StateLoad();
+//     }
+//     else
+//     {
+//       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 0);
+//     }
 
     if(!IsInsideCircle(circle, point))
     {
@@ -105,12 +107,12 @@ Circle Welzl::RProcess()
       {
         image->StateSave();
         image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
         image->StateLoad();
       }
       else
       {
-        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       }
 
       mDisk.push_back(point);
@@ -118,32 +120,32 @@ Circle Welzl::RProcess()
       mDisk.pop_back();
       mPset.push_front(point);
 
-      image->DrawPoint(mPoints[point], ic2);
+      image->DrawPoint(mPoints[point], ic);
       if(circle.radius)
       {
         image->StateSave();
         image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
         image->StateLoad();
       }
       else
       {
-        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
+        GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       }
     }
 
-     image->DrawPoint(mPoints[point], ic);
-     if(circle.radius)
-     {
-       image->StateSave();
-       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
-       image->StateLoad();
-     }
-     else
-     {
-       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, 200);
-     }
+    image->DrawPoint(mPoints[point], ic);
+    if(circle.radius)
+    {
+      image->StateSave();
+      image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
+      image->StateLoad();
+    }
+    else
+    {
+      GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
+    }
   }
 
   return circle;
