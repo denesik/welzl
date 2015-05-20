@@ -34,7 +34,7 @@ int main()
 
   printf("begin\n");
 
-  Circle c = w.Process(&image, points);
+  Circle c = w.Process(points);
 
   printf("end\n");
 

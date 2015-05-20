@@ -4,9 +4,8 @@
 #include <assert.h>
 
 
-Circle Welzl::Process(Image *im, const std::vector<Point> &points)
+Circle Welzl::Process(const std::vector<Point> &points)
 {
-  image = im;
   mPoints = points;
 
   for(unsigned int i = 0; i < points.size(); ++i)
@@ -25,7 +24,11 @@ Circle Welzl::RProcess()
   {
     if(mDisk.size() == 3)
     {
-      circle = CreateCircle();
+      circle = CreateCircle3();
+    }
+    if(mDisk.size() == 2)
+    {
+      circle = CreateCircle2();
     }
   }
   else
@@ -62,7 +65,7 @@ bool Welzl::IsInsideCircle(const Circle &circle, unsigned int index)
   return len < circle.radius;
 }
 
-Circle Welzl::CreateCircle()
+Circle Welzl::CreateCircle3()
 {
   assert(mDisk.size() == 3);
 
@@ -95,16 +98,26 @@ Circle Welzl::CreateCircle()
 
   circle.radius = sqrt((circle.center.x - x1) * (circle.center.x - x1) + (circle.center.y - y1) * (circle.center.y - y1));
 
-  image->Fill(0xFFFFFFFF);
-  image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
-  for(auto it = mPoints.begin(); it != mPoints.end(); ++it)
+  return circle;
+}
+
+Circle Welzl::CreateCircle2()
+{
+  assert(mDisk.size() == 2);
+
+  Circle circle;
+
+  const float x1 = mPoints[mDisk[0]].x;
+  const float y1 = mPoints[mDisk[0]].y;
+  const float x2 = mPoints[mDisk[1]].x;
+  const float y2 = mPoints[mDisk[1]].y;
+
+  circle.radius = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) / 2.0f;
+  if(circle.radius)
   {
-    image->DrawPoint(*it, 0x00FF00FF);
+    circle.center.x = (x2 + x1) / 2.0f;
+    circle.center.y = (y2 + y1) / 2.0f;
   }
-  image->DrawPoint(mPoints[mDisk[0]], 0x0000FFFF);
-  image->DrawPoint(mPoints[mDisk[1]], 0x0000FFFF);
-  image->DrawPoint(mPoints[mDisk[2]], 0x0000FFFF);
-  image->Save("img.png");
 
   return circle;
 }

@@ -6,7 +6,6 @@
 #include "Gmath.h"
 #include <vector>
 #include <list>
-#include "Image.h"
 
 struct Circle
 {
@@ -22,7 +21,7 @@ class Welzl
 {
 public:
 
-  Circle Process(Image *im, const std::vector<Point> &points);
+  Circle Process(const std::vector<Point> &points);
 
 private:
 
@@ -32,14 +31,14 @@ private:
 
   std::vector<unsigned int> mDisk;
 
-  Image *image;
-
 private:
   bool IsInsideCircle(const Circle &circle, unsigned int index);
 
   Circle RProcess();
 
-  Circle CreateCircle();
+  Circle CreateCircle3();
+
+  Circle CreateCircle2();
 
 };
 
