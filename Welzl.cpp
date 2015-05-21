@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "gif-h/gif.h"
 
-#define GIF_SPEED 2
+#define GIF_SPEED 5
 
 Circle Welzl::Process(Image *im, const std::vector<Point> &points)
 {
@@ -49,6 +49,7 @@ Circle Welzl::RProcess()
       image->StateSave();
       image->DrawCircle(circle.center, circle.radius, 0xFF0000FF);
       GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
+      image->Save("img.png");
       image->StateLoad();
     }
   }
@@ -132,6 +133,10 @@ Circle Welzl::RProcess()
       {
         GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED);
       }
+    }
+    else
+    {
+      mPset.push_back(point);
     }
 
     image->DrawPoint(mPoints[point], ic);

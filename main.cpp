@@ -37,16 +37,18 @@ std::vector<Point> Generate(const Point &lb, const Point &rt, unsigned int count
 
 int main()
 {
-  srand(static_cast<unsigned int>(time(0)));
+  unsigned int seed = static_cast<unsigned int>(time(0));
+  printf("seed: %i\n", seed);
+  //srand(1432190824);
   //srand(static_cast<unsigned int>(9)); // global test
-  //srand(static_cast<unsigned int>(12));
-  Size size(1000, 1000);
+  //srand(static_cast<unsigned int>(13));
+  Size size(300, 300);
 
   Image image;
   image.Resize(size);
   image.Fill(0xFFFFFFFF);
 
-  std::vector<Point> points = Generate(Point(200, 200), Point(800, 800), 500);
+  std::vector<Point> points = Generate(Point(100, 100), Point(200, 200), 200);
 
   Welzl w;
 
@@ -66,6 +68,8 @@ int main()
   image.DrawCircle(c.center, c.radius, 0xFF0000FF);
 
   image.Save("img.png");
+
+  //system("pause");
 
   return 0;
 }
