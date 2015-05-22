@@ -50,7 +50,7 @@ int main()
   image.Resize(size);
   image.Fill(0xFFFFFFFF);
 
-  std::vector<Point> points = Generate(Point(100, 100), Point(200, 200), 10);
+  std::vector<Point> points = Generate(Point(100, 100), Point(200, 200), 1500000);
 
   Welzl w;
 
@@ -71,7 +71,7 @@ int main()
 
   image.Save("img.png");
 
-  //system("pause");
+  system("pause");
 
   return 0;
 }

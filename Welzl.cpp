@@ -4,7 +4,9 @@
 #include <assert.h>
 #include "gif-h/gif.h"
 
-#define GIF_SPEED 200
+unsigned int Welzl::count = 0;
+
+#define GIF_SPEED 150
 
 Circle Welzl::Process(Image *im, const std::vector<Point> &points)
 {
@@ -27,6 +29,8 @@ Circle Welzl::Process(Image *im, const std::vector<Point> &points)
 
   delete static_cast<GifWriter *>(gw);
 
+  printf("count: %i\n", count);
+
   return c;
 }
 
@@ -45,6 +49,9 @@ Circle Welzl::Process(Image *im, const std::vector<Point> &points)
   { \
     GifWriteFrame(static_cast<GifWriter *>(gw), &image->Raw()[0], image->GetSize().width, image->GetSize().height, GIF_SPEED); \
   }
+
+// #define DRAW_CIRCLE
+// #define DRAW_CIRCLE_IF
 
 Circle Welzl::RProcess()
 {
@@ -121,8 +128,8 @@ unsigned int RAND_COLOR()
 
   static unsigned int colors[] = 
   {
-    0x85DBEFFF,
     0xD7C833FF,
+    0x85DBEFFF,
     0x85EFA0FF,
     0x6495EDFF,
     0xDA70D6FF,
@@ -131,21 +138,24 @@ unsigned int RAND_COLOR()
     0x328910FF,
     0x30D5C8FF,
     0xDE3163FF,
-    0x3E987FF,
+    0x3E9870FF,
     0x3E8D98FF,
     0x3E5D98FF,
     0x8C3E98FF,
     0x985E3EFF,
     0x98A531FF,
     0x43A531FF,
-    0x0000FFFF,
     0x00FF00FF,
     0xFF00FFFF,
     0x00FFFFFF,
     0xFFFF00FF,
   };
-
-  assert(i < 22);
+  
+  if(i >= sizeof(colors) / sizeof(unsigned int))
+  {
+    i = 0;
+  }
+  assert(i < sizeof(colors) / sizeof(unsigned int));
 
   return colors[i++];
 }
@@ -197,10 +207,12 @@ Circle Welzl::RProcess(std::list<unsigned int>::iterator last, unsigned int last
     image->DrawPoint(mPoints[point], INC_COLOR(rcolor));
     DRAW_CIRCLE_IF
 
+    ++count;
+
     if(!IsInsideCircle(circle, point))
     {
 //      unsigned int ic = image->GetPoint(mPoints[point]);
-      image->DrawPoint(mPoints[point], 0x000000FF);
+      image->DrawPoint(mPoints[point], 0x0000FFFF);
       DRAW_CIRCLE_IF
       
       mDisk.push_back(point);

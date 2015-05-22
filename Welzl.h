@@ -37,6 +37,8 @@ private:
 
   void *gw;
 
+  static unsigned int count;
+
 private:
   bool IsInsideCircle(const Circle &circle, unsigned int index);
 
