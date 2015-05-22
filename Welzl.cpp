@@ -2,18 +2,33 @@
 
 #include <list>
 #include <assert.h>
+#include <algorithm>
+
+
+
+unsigned int Welzl::count = 0;
 
 
 Circle Welzl::Process(const std::vector<Point> &points)
 {
   mPoints = points;
 
+  std::vector<unsigned int> tmp;
   for(unsigned int i = 0; i < points.size(); ++i)
   {
-    mPset.push_back(i);
+    tmp.push_back(i);
+  }
+
+  std::random_shuffle(tmp.begin(), tmp.end());
+
+  for(unsigned int i = 0; i < points.size(); ++i)
+  {
+    mPset.push_back(tmp[i]);
   }
 
   RProcess(mPset.end());
+
+  printf("count: %i\n", count);
 
   return mCircle;
 }
@@ -38,6 +53,8 @@ void Welzl::RProcess(std::list<unsigned int>::iterator last)
   for (auto it = mPset.begin(); it != last;)
   {
     unsigned int point = *it;
+
+    ++count;
 
     if(!IsInsideCircle(point))
     {

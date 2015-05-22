@@ -33,6 +33,8 @@ private:
 
   Circle mCircle;
 
+  static unsigned int count;
+
 private:
   bool IsInsideCircle(unsigned int index);
 
