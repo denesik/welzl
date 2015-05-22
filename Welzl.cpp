@@ -13,7 +13,7 @@ Circle Welzl::Process(const std::vector<Point> &points)
     mPset.push_back(i);
   }
 
-  return RProcess();
+  return RProcess(mPset.end());
 }
 
 Circle Welzl::RProcess()
@@ -44,6 +44,46 @@ Circle Welzl::RProcess()
       circle = RProcess();
       mDisk.pop_back();
       mPset.push_front(point);
+    }
+  }
+
+  return circle;
+}
+
+Circle Welzl::RProcess(std::list<unsigned int>::iterator last)
+{
+  Circle circle;
+
+  if(mDisk.size() == 3)
+  {
+    circle = CreateCircle3();
+  }
+  if(mDisk.size() == 2)
+  {
+    circle = CreateCircle2();
+  }
+
+  if(mDisk.size() == 3)
+  {
+    return circle;
+  }
+
+
+  for (auto it = mPset.begin(); it != last;)
+  {
+    unsigned int point = *it;
+
+    if(!IsInsideCircle(circle, point))
+    {
+      mDisk.push_back(point);
+      circle = RProcess(it);
+      mDisk.pop_back();
+
+      mPset.splice(mPset.begin(), mPset, it++);
+    }
+    else
+    {
+      ++it;
     }
   }
 

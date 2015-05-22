@@ -22,13 +22,13 @@ std::vector<Point> Generate(const Point &lb, const Point &rt, unsigned int count
 int main()
 {
   srand(static_cast<unsigned int>(time(0)));
-  Size size(100, 100);
+  Size size(1000, 1000);
 
   Image image;
   image.Resize(size);
   image.Fill(0xFFFFFFFF);
 
-  std::vector<Point> points = Generate(Point(40, 40), Point(60, 60), 10);
+  std::vector<Point> points = Generate(Point(500, 300), Point(700, 700), 10000000);
 
   Welzl w;
 
