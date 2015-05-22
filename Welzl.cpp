@@ -13,59 +13,25 @@ Circle Welzl::Process(const std::vector<Point> &points)
     mPset.push_back(i);
   }
 
-  return RProcess(mPset.end());
+  RProcess(mPset.end());
+
+  return mCircle;
 }
 
-Circle Welzl::RProcess()
+void Welzl::RProcess(std::list<unsigned int>::iterator last)
 {
-  Circle circle;
-
-  if(mPset.empty() || mDisk.size() == 3)
-  {
-    if(mDisk.size() == 3)
-    {
-      circle = CreateCircle3();
-    }
-    if(mDisk.size() == 2)
-    {
-      circle = CreateCircle2();
-    }
-  }
-  else
-  {
-    unsigned int point = mPset.back();
-    mPset.pop_back();
-
-    circle = RProcess();
-
-    if(!IsInsideCircle(circle, point))
-    {
-      mDisk.push_back(point);
-      circle = RProcess();
-      mDisk.pop_back();
-      mPset.push_front(point);
-    }
-  }
-
-  return circle;
-}
-
-Circle Welzl::RProcess(std::list<unsigned int>::iterator last)
-{
-  Circle circle;
-
   if(mDisk.size() == 3)
   {
-    circle = CreateCircle3();
+    mCircle = CreateCircle3();
   }
   if(mDisk.size() == 2)
   {
-    circle = CreateCircle2();
+    mCircle = CreateCircle2();
   }
 
   if(mDisk.size() == 3)
   {
-    return circle;
+    return;
   }
 
 
@@ -73,10 +39,10 @@ Circle Welzl::RProcess(std::list<unsigned int>::iterator last)
   {
     unsigned int point = *it;
 
-    if(!IsInsideCircle(circle, point))
+    if(!IsInsideCircle(point))
     {
       mDisk.push_back(point);
-      circle = RProcess(it);
+      RProcess(it);
       mDisk.pop_back();
 
       mPset.splice(mPset.begin(), mPset, it++);
@@ -87,12 +53,12 @@ Circle Welzl::RProcess(std::list<unsigned int>::iterator last)
     }
   }
 
-  return circle;
+/*  mCircle = circle;*/
 }
 
-bool Welzl::IsInsideCircle(const Circle &circle, unsigned int index)
+bool Welzl::IsInsideCircle(unsigned int index)
 {
-  if(circle.radius == 0)
+  if(mCircle.radius == 0)
   {
     return false;
   }
@@ -100,9 +66,9 @@ bool Welzl::IsInsideCircle(const Circle &circle, unsigned int index)
   const float x = mPoints[index].x;
   const float y = mPoints[index].y;
 
-  float len = sqrt((circle.center.x - x) * (circle.center.x - x) + (circle.center.y - y) * (circle.center.y - y));
+  float len = sqrt((mCircle.center.x - x) * (mCircle.center.x - x) + (mCircle.center.y - y) * (mCircle.center.y - y));
 
-  return len < circle.radius;
+  return len < mCircle.radius;
 }
 
 Circle Welzl::CreateCircle3()

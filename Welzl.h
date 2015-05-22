@@ -31,12 +31,12 @@ private:
 
   std::vector<unsigned int> mDisk;
 
+  Circle mCircle;
+
 private:
-  bool IsInsideCircle(const Circle &circle, unsigned int index);
+  bool IsInsideCircle(unsigned int index);
 
-  Circle RProcess(std::list<unsigned int>::iterator last);
-
-  Circle RProcess();
+  void RProcess(std::list<unsigned int>::iterator last);
 
   Circle CreateCircle3();
 
