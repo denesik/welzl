@@ -42,13 +42,15 @@ int main()
   //srand(1432190824);
   //srand(static_cast<unsigned int>(9)); // global test
   //srand(static_cast<unsigned int>(13));
+
+  srand(5);
   Size size(300, 300);
 
   Image image;
   image.Resize(size);
   image.Fill(0xFFFFFFFF);
 
-  std::vector<Point> points = Generate(Point(100, 100), Point(200, 200), 200);
+  std::vector<Point> points = Generate(Point(100, 100), Point(200, 200), 10);
 
   Welzl w;
 

@@ -40,7 +40,10 @@ private:
 private:
   bool IsInsideCircle(const Circle &circle, unsigned int index);
 
+  Circle RProcess(std::list<unsigned int>::iterator last, unsigned int color);
+
   Circle RProcess();
+
 
   Circle CreateCircle3();
 
